@@ -1,0 +1,14 @@
+{
+  "name": "FigDrop ⚡ Web Capture Dropzone",
+  "id": "figdrop-web-capture-widget-1",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "src/ui.html",
+  "containsWidget": true,
+  "widgetApi": "1.0.0",
+  "editorType": ["figjam", "figma"],
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "Connect to local FigDrop sync bridge and load web visual references"
+  }
+}

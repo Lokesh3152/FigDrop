@@ -1,0 +1,126 @@
+/* FigDrop Content Script — Clean, Minimal, Human Design */
+
+.figdrop-overlay-host {
+  position: fixed;
+  z-index: 2147483647;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.figdrop-overlay-host.figdrop-hidden {
+  opacity: 0;
+  transform: translateY(2px);
+  pointer-events: none;
+}
+
+.figdrop-overlay-host.figdrop-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Floating button with crisp boundary shadow so it never blends into the webpage */
+.figdrop-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 6px;
+  background: #7B61FF; /* Figma Purple */
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  user-select: none;
+  pointer-events: auto;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.figdrop-btn:hover {
+  background: #6949FF;
+  transform: translateY(-1px);
+}
+
+.figdrop-btn:active {
+  background: #5737E5;
+  transform: translateY(1px);
+}
+
+.figdrop-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+}
+
+/* Button States */
+.figdrop-btn.figdrop-btn-loading {
+  background: #444444;
+  pointer-events: none;
+}
+
+.figdrop-btn.figdrop-btn-success {
+  background: #0D99FF; /* Figma Blue */
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.figdrop-btn.figdrop-btn-error {
+  background: #F24822; /* Figma Red */
+}
+
+/* Toast Notification */
+.figdrop-toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+}
+
+.figdrop-toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 6px;
+  padding: 10px 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
+  color: #1E1E1E;
+  font-size: 12.5px;
+  font-weight: 500;
+  pointer-events: auto;
+  animation: figdrop-fade 0.2s ease forwards;
+  max-width: 280px;
+}
+
+.figdrop-toast-text {
+  flex: 1;
+  line-height: 1.3;
+}
+
+.figdrop-toast-sub {
+  font-size: 11px;
+  color: #888888;
+  font-weight: 400;
+  margin-top: 1px;
+}
+
+@keyframes figdrop-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

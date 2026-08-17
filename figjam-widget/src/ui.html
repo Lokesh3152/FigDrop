@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FigDrop Collector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7B61FF;
+      --primary-hover: #6949FF;
+      --primary-active: #5737E5;
+      --bg: #FAFAFA;
+      --card-bg: #FFFFFF;
+      --border: #E5E5E5;
+      --border-subtle: #EEEEEE;
+      --text-main: #1E1E1E;
+      --text-subtle: #757575;
+      --radius: 6px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      padding: 12px 14px;
+      user-select: none;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 2px;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: var(--radius);
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+    .brand-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    /* Pairing Code Pill */
+    .room-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius);
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      color: var(--text-subtle);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .room-pill:hover {
+      border-color: var(--primary);
+    }
+    .room-pill b {
+      color: var(--primary);
+      letter-spacing: 0.03em;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Auto-Drop Banner Card */
+    .auto-drop-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 9px 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    .auto-drop-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .auto-drop-title {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .auto-drop-desc {
+      font-size: 10px;
+      color: var(--text-subtle);
+    }
+
+    /* Apple-style Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      width: 32px;
+      height: 19px;
+      border-radius: 9999px;
+      background: #E5E5E5;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      flex-shrink: 0;
+      transition: background 0.2s ease;
+      padding: 2px;
+    }
+    .toggle-thumb {
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease;
+    }
+    .toggle-switch.toggle-active {
+      background: var(--primary);
+    }
+    .toggle-switch.toggle-active .toggle-thumb {
+      transform: translateX(13px);
+    }
+
+    .queue-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .queue-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .queue-count-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 2px;
+    }
+    .queue-number {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1;
+    }
+    .queue-desc {
+      font-size: 12px;
+      color: var(--text-subtle);
+    }
+
+    .btn-drop {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      background: var(--primary);
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      transition: background 0.15s ease;
+    }
+    .btn-drop:hover { background: var(--primary-hover); }
+    .btn-drop:active { background: var(--primary-active); }
+    .btn-drop:disabled { background: #DDDDDD; color: #888888; cursor: not-allowed; border-color: transparent; box-shadow: none; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      margin-top: 8px;
+      padding-right: 2px;
+      scrollbar-width: thin;
+      scrollbar-color: #E0E0E0 transparent;
+    }
+    .gallery-grid::-webkit-scrollbar {
+      width: 4px;
+    }
+    .gallery-grid::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .gallery-grid::-webkit-scrollbar-thumb {
+      background: #E0E0E0;
+      border-radius: 9999px;
+    }
+    .gallery-item {
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #F0F0F0;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .btn-sm {
+      padding: 3px 8px;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--text-subtle);
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .btn-sm:hover {
+      background: var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .room-drawer {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .room-drawer.active {
+      display: flex;
+    }
+    .room-input {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 5px 8px;
+      font-size: 12px;
+      outline: none;
+      font-family: inherit;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .room-input:focus {
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand-group">
+        <div class="brand-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+            <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </div>
+        <div class="brand-title">FigDrop</div>
+      </div>
+      <button class="room-pill" onclick="copyRoomCode()" title="Click to copy Room Code">
+        <span>Room:</span>
+        <b id="roomPillText">DROP-0000</b>
+        <span id="copyIndicator" style="font-size: 10px; color: var(--primary); margin-left: 2px;">📋</span>
+      </button>
+    </div>
+
+    <!-- Room Code Drawer -->
+    <div id="roomDrawer" class="room-drawer">
+      <div style="font-size: 11px; color: var(--text-subtle);">Connect to Custom Room Code:</div>
+      <div style="display: flex; gap: 6px;">
+        <input id="roomInput" type="text" class="room-input" style="flex: 1;" placeholder="e.g. DROP-7821" />
+        <button class="btn-sm" onclick="saveRoomCode()">Switch</button>
+      </div>
+    </div>
+
+    <!-- Auto-Drop Feature Toggle -->
+    <div class="auto-drop-row">
+      <div class="auto-drop-info">
+        <div class="auto-drop-title">⚡ Auto-Drop Mode</div>
+        <div class="auto-drop-desc">Stream captures to canvas in real-time as you browse</div>
+      </div>
+      <button id="toggleAutoDrop" class="toggle-switch" onclick="toggleAutoDrop()">
+        <span class="toggle-thumb"></span>
+      </button>
+    </div>
+
+    <!-- Queue Stat Card -->
+    <div class="card">
+      <div class="queue-stat">
+        <div class="queue-label">Saved Captures</div>
+        <div class="queue-count-row">
+          <div id="queueCount" class="queue-number">0</div>
+          <div id="queueLabel" class="queue-desc">images ready to place</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drop Button -->
+    <button id="btnDrop" class="btn-drop" onclick="dropToCanvas()">
+      <span id="btnDropText">Drop onto Board</span>
+    </button>
+
+    <!-- Recent Captures Preview -->
+    <div class="card" style="padding: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 600;">
+        <span>Previews</span>
+        <div style="display: flex; gap: 4px;">
+          <button class="btn-sm" onclick="toggleDrawer()">Custom Room</button>
+          <button class="btn-sm" onclick="refreshQueue()">Refresh</button>
+        </div>
+      </div>
+      <div id="gallery" class="gallery-grid">
+        <div style="grid-column: span 3; text-align: center; color: var(--text-subtle); font-size: 11.5px; padding: 16px;">
+          No captures waiting on room <b id="emptyRoomCode">DROP-0000</b>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Safe storage helper for sandboxed data: iframe
+    function getStored(key, defaultVal) {
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          return window.localStorage.getItem(key) || defaultVal;
+        }
+      } catch (e) {}
+      return defaultVal;
+    }
+
+    function setStored(key, val) {
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.setItem(key, val);
+        }
+      } catch (e) {}
+    }
+
+    // Configurable Server URL (Supports Cloud URL or Localhost)
+    let bridgeUrl = getStored('figdrop_server_url', 'http://localhost:8765');
+    let roomCode = 'DROP-1000';
+    let cachedItems = [];
+    let autoDropEnabled = false;
+    let ws = null;
+    let isProcessingDrop = false;
+
+    function copyRoomCode() {
+      const textToCopy = roomCode;
+      
+      // Method 1: navigator.clipboard if available
+      if (navigator && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        navigator.clipboard.writeText(textToCopy)
+          .then(() => showCopySuccess())
+          .catch(() => fallbackCopy(textToCopy));
+      } else {
+        fallbackCopy(textToCopy);
+      }
+    }
+
+    function fallbackCopy(text) {
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        textArea.setAttribute('readonly', '');
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        if (successful) {
+          showCopySuccess();
+        } else {
+          showPromptCopy(text);
+        }
+      } catch (err) {
+        showPromptCopy(text);
+      }
+    }
+
+    function showPromptCopy(text) {
+      try {
+        window.prompt('Copy Room Code:', text);
+      } catch (e) {}
+      showCopySuccess();
+    }
+
+    function showCopySuccess() {
+      const ind = document.getElementById('copyIndicator');
+      if (ind) {
+        ind.innerText = '✓ Copied!';
+        setTimeout(() => {
+          if (ind) ind.innerText = '📋';
+        }, 1500);
+      }
+    }
+
+    function toggleDrawer() {
+      const drawer = document.getElementById('roomDrawer');
+      drawer.classList.toggle('active');
+    }
+
+    function saveRoomCode() {
+      const input = document.getElementById('roomInput');
+      const val = input.value.trim().toUpperCase();
+      if (val) {
+        setRoomCode(val);
+      }
+      document.getElementById('roomDrawer').classList.remove('active');
+    }
+
+    function setRoomCode(code, notifyBackend = true) {
+      roomCode = code.trim().toUpperCase();
+      document.getElementById('roomPillText').innerText = roomCode;
+      document.getElementById('emptyRoomCode').innerText = roomCode;
+      if (notifyBackend) {
+        parent.postMessage({
+          pluginMessage: {
+            type: 'SET_ROOM',
+            roomCode: roomCode
+          }
+        }, '*');
+      }
+      initWebSocket();
+      refreshQueue();
+    }
+
+    function toggleAutoDrop() {
+      autoDropEnabled = !autoDropEnabled;
+      const btn = document.getElementById('toggleAutoDrop');
+      if (autoDropEnabled) {
+        btn.classList.add('toggle-active');
+        if (cachedItems.length > 0) {
+          dropToCanvas();
+        }
+      } else {
+        btn.classList.remove('toggle-active');
+      }
+    }
+
+    function initWebSocket() {
+      try {
+        if (ws) {
+          ws.onclose = null;
+          ws.close();
+        }
+        const wsProtocol = bridgeUrl.startsWith('https') ? 'wss://' : 'ws://';
+        const wsHost = bridgeUrl.replace(/^https?:\/\//, '');
+        const wsUrl = `${wsProtocol}${wsHost}?channelId=${encodeURIComponent(roomCode)}`;
+        
+        ws = new WebSocket(wsUrl);
+
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === 'CAPTURE_ADDED' || data.type === 'STATUS_UPDATE') {
+              refreshQueue().then(() => {
+                if (autoDropEnabled && cachedItems.length > 0 && !isProcessingDrop) {
+                  dropToCanvas();
+                }
+              });
+            }
+          } catch (e) {}
+        };
+
+        ws.onclose = () => {
+          setTimeout(initWebSocket, 4000);
+        };
+      } catch (e) {}
+    }
+
+    async function refreshQueue() {
+      try {
+        const res = await fetch(`${bridgeUrl}/api/captures?channelId=${encodeURIComponent(roomCode)}&status=pending`);
+        if (res.ok) {
+          const data = await res.json();
+          cachedItems = data.items || [];
+          renderQueue(cachedItems);
+
+          // Update on-canvas widget counter
+          parent.postMessage({
+            pluginMessage: {
+              type: 'UPDATE_COUNT',
+              count: cachedItems.length
+            }
+          }, '*');
+        }
+      } catch (e) {}
+    }
+
+    function renderQueue(items) {
+      document.getElementById('queueCount').innerText = items.length;
+      document.getElementById('queueLabel').innerText = items.length === 1 ? 'image ready to place' : 'images ready to place';
+      
+      const gallery = document.getElementById('gallery');
+      if (items.length === 0) {
+        gallery.innerHTML = `<div style="grid-column: span 3; text-align: center; color: var(--text-subtle); font-size: 11.5px; padding: 16px;">No captures waiting on room <b>${roomCode}</b>. Hover web images & click Save to FigJam.</div>`;
+        document.getElementById('btnDrop').disabled = true;
+      } else {
+        document.getElementById('btnDrop').disabled = false;
+        gallery.innerHTML = items.map(item => `
+          <div class="gallery-item" title="${item.pageTitle}">
+            <img src="${item.dataUrl || item.imageUrl}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'30\\' height=\\'30\\' fill=\\'%237B61FF\\'><rect width=\\'30\\' height=\\'30\\'/></svg>'" />
+          </div>
+        `).join('');
+      }
+    }
+
+    // Convert any image into valid PNG binary bytes using in-memory Canvas
+    async function convertToPngBytes(imageUrl, dataUrl) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || img.width || 400;
+            canvas.height = img.naturalHeight || img.height || 300;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            canvas.toBlob(async (blob) => {
+              if (blob) {
+                const buf = await blob.arrayBuffer();
+                resolve(new Uint8Array(buf));
+              } else {
+                fetchRawBytes(imageUrl, dataUrl).then(resolve);
+              }
+            }, 'image/png');
+          } catch (e) {
+            fetchRawBytes(imageUrl, dataUrl).then(resolve);
+          }
+        };
+
+        img.onerror = () => {
+          fetchRawBytes(imageUrl, dataUrl).then(resolve);
+        };
+
+        if (dataUrl && dataUrl.startsWith('data:image')) {
+          img.src = dataUrl;
+        } else if (imageUrl) {
+          img.src = `${bridgeUrl}/api/proxy-image?url=${encodeURIComponent(imageUrl)}`;
+        } else {
+          resolve(null);
+        }
+      });
+    }
+
+    async function fetchRawBytes(imageUrl, dataUrl) {
+      try {
+        if (dataUrl && dataUrl.startsWith('data:image')) {
+          const res = await fetch(dataUrl);
+          return new Uint8Array(await res.arrayBuffer());
+        }
+        if (imageUrl) {
+          const proxyUrl = `${bridgeUrl}/api/proxy-image?url=${encodeURIComponent(imageUrl)}`;
+          const res = await fetch(proxyUrl);
+          if (res.ok) return new Uint8Array(await res.arrayBuffer());
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    async function dropToCanvas() {
+      if (cachedItems.length === 0 || isProcessingDrop) return;
+      isProcessingDrop = true;
+
+      const btn = document.getElementById('btnDrop');
+      const btnText = document.getElementById('btnDropText');
+      btn.disabled = true;
+      btnText.innerText = 'Decoding & Placing...';
+
+      const itemsToProcess = [...cachedItems];
+      const preparedItems = [];
+
+      for (const item of itemsToProcess) {
+        try {
+          const bytes = await convertToPngBytes(item.imageUrl, item.dataUrl);
+          if (bytes && bytes.length > 0) {
+            preparedItems.push({
+              ...item,
+              bytes: bytes
+            });
+          }
+        } catch (err) {
+          console.warn('Image byte conversion failed for:', item.id, err);
+        }
+      }
+
+      if (preparedItems.length === 0) {
+        btnText.innerText = 'Drop onto Board';
+        btn.disabled = false;
+        isProcessingDrop = false;
+        return;
+      }
+
+      // Send binary items directly to Figma canvas thread
+      parent.postMessage({
+        pluginMessage: {
+          type: 'DROP_ITEMS',
+          channelId: roomCode,
+          isAutoDrop: autoDropEnabled,
+          items: preparedItems
+        }
+      }, '*');
+    }
+
+    window.onmessage = async (event) => {
+      const msg = event.data?.pluginMessage;
+      if (!msg) return;
+
+      if (msg.type === 'INIT_ROOM' && msg.roomCode) {
+        setRoomCode(msg.roomCode, false);
+      }
+
+      if (msg.type === 'DROP_COMPLETE') {
+        isProcessingDrop = false;
+        const btn = document.getElementById('btnDrop');
+        const btnText = document.getElementById('btnDropText');
+        btnText.innerText = 'Drop onto Board';
+        btn.disabled = true;
+
+        cachedItems = [];
+        document.getElementById('queueCount').innerText = '0';
+        document.getElementById('queueLabel').innerText = 'images ready to place';
+        document.getElementById('gallery').innerHTML = `<div style="grid-column: span 3; text-align: center; color: #10B981; font-weight: 500; font-size: 12px; padding: 16px;">✓ All references placed on room <b>${roomCode}</b>!</div>`;
+
+        // Notify on-canvas widget
+        parent.postMessage({
+          pluginMessage: {
+            type: 'UPDATE_COUNT',
+            count: 0
+          }
+        }, '*');
+
+        try {
+          await fetch(`${bridgeUrl}/api/captures/synced`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ channelId: roomCode })
+          });
+        } catch (e) {}
+      }
+    };
+
+    initWebSocket();
+    refreshQueue();
+    setInterval(refreshQueue, 3000);
+  </script>
+</body>
+</html>
