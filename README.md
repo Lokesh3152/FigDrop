@@ -1,4 +1,4 @@
-# ⚡ FigDrop (Local Edition) — 100% Offline & Private
+# FigDrop (Local Edition) — 100% Offline & Private
 
 This version runs completely on your local machine over \`localhost:8765\`. No external servers, no cloud tracking, 100% private.
 
